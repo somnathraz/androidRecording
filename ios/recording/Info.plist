@@ -6,6 +6,7 @@
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
 	<string>recording</string>
+	
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -24,6 +25,8 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	 <key>NSMicrophoneUsageDescription</key>
+  <string>recording want to use your microphone</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 	  <!-- Do not change NSAllowsArbitraryLoads to true, or you will risk app rejection! -->
