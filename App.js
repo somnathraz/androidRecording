@@ -10,7 +10,7 @@ const options = {
   sampleRate: 32000, // default is 44100 but 32000 is adequate for accurate voice recognition
   channels: 1, // 1 or 2, default 1
   bitsPerSample: 16, // 8 or 16, default 16
-  audioSource: 7, // android only (see below)
+  audioSource: 6, // android only (see below)
   bufferSize: 4096, // default is 2048
 };
 LiveAudioStream.init(options);
@@ -21,13 +21,14 @@ export default function App() {
 
   LiveAudioStream.on('data', data => {
     // base64-encoded audio data chunks
+
     const chunk = Buffer.from(data, 'base64');
-    console.log(chunk);
+    console.log(chunk, 'chunk');
   });
   const handleStreamToggle = async () => {
-    setIsStreaming(!isStreaming);
     if (isStreaming) {
       LiveAudioStream.stop();
+      setIsStreaming(false);
     } else {
       check(PERMISSIONS.ANDROID.RECORD_AUDIO || PERMISSIONS.IOS.MICROPHONE)
         .then(result => {
@@ -38,7 +39,9 @@ export default function App() {
               );
               break;
             case RESULTS.DENIED:
-              request(PERMISSIONS.ANDROID.RECORD_AUDIO).then(resultData => {
+              request(
+                PERMISSIONS.ANDROID.RECORD_AUDIO || PERMISSIONS.IOS.MICROPHONE,
+              ).then(resultData => {
                 console.log(resultData);
               });
               console.log(
@@ -52,6 +55,10 @@ export default function App() {
               break;
             case RESULTS.GRANTED:
               console.log('The permission is granted');
+              setIsStreaming(true);
+              LiveAudioStream.init(options); // Init here
+              LiveAudioStream.start(); // Start here
+
               break;
             case RESULTS.BLOCKED:
               console.log(
@@ -65,8 +72,6 @@ export default function App() {
           console.log(error);
           console.log('====================================');
         });
-      LiveAudioStream.init(options);
-      LiveAudioStream.start();
     }
   };
   return (
